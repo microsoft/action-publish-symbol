@@ -31,8 +31,8 @@ describe('Helper Unit Tests', () => {
 
     // Act
     expect(() => {
-      getTempFileName();
-    }).toThrowError('Unable to create unique temp file name after 6 attempts');
+      getTempFileName()
+    }).toThrowError('Unable to create unique temp file name after 6 attempts')
 
     // Assert
     expect(core.error).toHaveBeenCalled()
@@ -83,5 +83,4 @@ describe('Helper Unit Tests', () => {
     // Assert
     expect(out).toBe('defaultValue')
   })
-
 })

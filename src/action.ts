@@ -30,18 +30,25 @@ export async function run(): Promise<void> {
     // flag the PAT as a secret so it's not written to logs
     core.setSecret(personalAccessToken)
 
-    let fileList: string[] = []
-
     if (!fs.existsSync(symbolsFolder)) {
       throw Error(`The folder '${symbolsFolder}' does not exist, please provide a valid folder`)
     }
 
     // Find all of the matches for the glob pattern(s)
-    const globber = await glob.create(path.join(symbolsFolder, searchPattern))
-    const matches = await globber.glob()
+    const fileList: string[] = []
 
-    // Return all the files that aren't directories
-    fileList = matches.filter(res => fs.statSync(res).isFile())
+    const searchPatterns = searchPattern
+      .split('\n')
+      .map(p => p.trim())
+      .filter(p => p.length > 0)
+    for (var pattern of searchPatterns) {
+      const globber = await glob.create(path.join(symbolsFolder, pattern))
+      const matches = await globber.glob()
+
+      // Return all the files that aren't directories
+      let matchedFiles: string[] = matches.filter((res: string) => fs.statSync(res).isFile())
+      fileList.push(...matchedFiles)
+    }
 
     core.info(`Found ${fileList.length} files`)
 
@@ -59,7 +66,15 @@ export async function run(): Promise<void> {
 
     stream.end()
 
-    await ps.publishSymbols(accountName, symbolServerUrl, requestName, symbolsFolder, tmpFileName, '36530', personalAccessToken)
+    await ps.publishSymbols(
+      accountName,
+      symbolServerUrl,
+      requestName,
+      symbolsFolder,
+      tmpFileName,
+      '36530',
+      personalAccessToken
+    )
 
     if (fs.existsSync(tmpFileName)) {
       io.rmRF(tmpFileName)

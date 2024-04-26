@@ -393,14 +393,14 @@ describe('Publish Symbol Unit Tests', () => {
 
   it('find error - toolName Not present', async () => {
     expect(() => {
-      find('', '1.0.0');
-    }).toThrowError('toolName parameter is required');
+      find('', '1.0.0')
+    }).toThrowError('toolName parameter is required')
   })
 
   it('find error - versionSpec Not present', async () => {
     expect(() => {
-      find('tool2', '');
-    }).toThrowError('versionSpec is a required parameter');
+      find('tool2', '')
+    }).toThrowError('versionSpec is a required parameter')
   })
 
   it('find error - not explicit version', () => {

@@ -29,6 +29,19 @@ Example Usage from a repository containing .NET Core code:
         personalAccessToken: ${{ secrets.PERSONALACCESSTOKEN }}
 ```
 
+Example Usage with multiple search patterns:
+
+```yaml
+- uses: microsoft/action-publish-symbols@v2.2.0
+  with:
+    accountName: <Azure DevOps Account Name>
+    symbolServiceUrl: 'https://artifacts.dev.azure.com'
+    personalAccessToken: ${{ secrets.PERSONALACCESSTOKEN }}
+    searchPattern: |
+      '**/bin/**/*.pdb'
+      '**/bin/**/*.exe'
+```
+
 The account name should be the Azure DevOps Organization name.
 
 The scope of the PAT ( Personal Access Token) generated from Azure DevOps to authenticate the request to Artifacts server should be of the include scopes:

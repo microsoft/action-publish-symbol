@@ -9,7 +9,7 @@ import * as hlp from '../src/Helpers'
 
 test('test getTempPath', async () => {
   const {symbolServiceUri, patToken} = getSymbolServerUrl()
-  let {versionNumber, downloadUri} = await ps.getSymbolClientVersion("testAdoAccount", symbolServiceUri, patToken)
+  let {versionNumber, downloadUri} = await ps.getSymbolClientVersion('testAdoAccount', symbolServiceUri, patToken)
   expect(versionNumber.length).toBeGreaterThan(0)
 })
 
@@ -64,11 +64,10 @@ test('downloadAndCache', async () => {
 // })
 
 function getSymbolServerUrl(): any {
-  jest.mock('@actions/core');
-  jest.spyOn(core, 'getInput').mockReturnValueOnce('1es-cat').mockReturnValueOnce('https://artifacts.dev.azure.com');
+  jest.mock('@actions/core')
+  jest.spyOn(core, 'getInput').mockReturnValueOnce('1es-cat').mockReturnValueOnce('https://artifacts.dev.azure.com')
   const accountName = core.getInput('accountName') as string
   const symbolServiceUri = `${core.getInput('symbolServiceUrl')}/${accountName}/_apis/symbol/client/task` as string
-  const patToken = "patToken"
+  const patToken = 'patToken'
   return {symbolServiceUri, patToken}
 }
-

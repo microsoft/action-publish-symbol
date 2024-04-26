@@ -8,12 +8,12 @@ inputs:
   personalAccessToken:
     required: true
     description: The Azure DevOps Personal Access Token (PAT) that has permission to publish symbols
-  symbolsFolder: 
+  symbolsFolder:
     required: false
     description: The base directory where the source code exists (defaults to GITHUB_WORKSPACE)
-  searchPattern: 
+  searchPattern:
     required: false
-    description: The search pattern used to search for symbols
+    description: The search patterns used to search for symbols, separated by newlines.
     default: '**/bin/**/*.pdb'
   symbolServiceUrl:
     required: false

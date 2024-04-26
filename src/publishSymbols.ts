@@ -10,7 +10,7 @@ import * as os from 'os'
 import {ok} from 'assert'
 import * as semver from 'semver'
 
-var isWindows : boolean = (os.type() == "Windows_NT")
+var isWindows: boolean = os.type() == 'Windows_NT'
 
 export async function downloadSymbolClient(downloadUri: string, directory: string): Promise<string> {
   const symbolAppZip = path.join(directory, 'symbol.app.buildtask.zip')
@@ -29,20 +29,24 @@ export async function downloadSymbolClient(downloadUri: string, directory: strin
   return symbolPath
 }
 
-export async function getSymbolClientVersion(accountName: string, symbolServiceUri: string, personalAccessToken: string): Promise<any> {
+export async function getSymbolClientVersion(
+  accountName: string,
+  symbolServiceUri: string,
+  personalAccessToken: string
+): Promise<any> {
   core.debug('Getting latest symbol.app.buildtask.zip package')
-  
-  if(!isWindows) {
+
+  if (!isWindows) {
     var clientFetchUrl = `https://vsblob.dev.azure.com/${accountName}/_apis/clienttools/symbol/release?osName=linux&arch=x86_64`
-    const encodedBase64Token = Buffer.from(`${""}:${personalAccessToken}`).toString('base64'); 
+    const encodedBase64Token = Buffer.from(`${''}:${personalAccessToken}`).toString('base64')
 
     const response = await axios.get(clientFetchUrl, {
       headers: {
-        'Authorization': `Basic ${encodedBase64Token}`
+        Authorization: `Basic ${encodedBase64Token}`
       }
-    });
+    })
 
-    if(response.status == 401) {
+    if (response.status == 401) {
       throw Error("Verify that PAT isn't expired and has build scope permission")
     } else if (response.status >= 300) {
       throw Error("Client download URL couldn't be retrieved")
@@ -64,8 +68,8 @@ export async function getSymbolClientVersion(accountName: string, symbolServiceU
 }
 
 export async function runSymbolCommand(assemblyPath: string, args: string): Promise<void> {
-  var exe;
-  if(isWindows) {
+  var exe
+  if (isWindows) {
     exe = path.join(assemblyPath, 'symbol.exe')
   } else {
     exe = path.join(assemblyPath, 'symbol')
@@ -94,21 +98,25 @@ export async function unzipSymbolClient(clientZip: string, destinationDirectory:
   core.debug(`Creating ${destinationDirectory}`)
   await io.mkdirP(destinationDirectory)
 
-  var result = ""
-  if(isWindows) {
+  var result = ''
+  if (isWindows) {
     result = await tc.extractZip(clientZip, destinationDirectory)
   } else {
     try {
       await exec.exec(`/usr/bin/unzip -o -q ${clientZip} -d ${destinationDirectory}`)
       result = destinationDirectory
-    } catch(e) {
-      core.warning("Encountered some issues while unzipping.")
+    } catch (e) {
+      core.warning('Encountered some issues while unzipping.')
     }
   }
   core.debug(`Unzipped - ${result}`)
 }
 
-export async function updateSymbolClient(accountName: string, symbolServiceUri: string, personalAccessToken: string): Promise<string> {
+export async function updateSymbolClient(
+  accountName: string,
+  symbolServiceUri: string,
+  personalAccessToken: string
+): Promise<string> {
   core.debug('Checking for most recent symbol.app.buildtask.zip version')
 
   const {versionNumber, downloadUri} = await getSymbolClientVersion(accountName, symbolServiceUri, personalAccessToken)
